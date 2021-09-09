@@ -6,13 +6,9 @@ type BasePlugin struct {
 	c interfaces.GrpcClient
 }
 
-func (p *BasePlugin) Register() {
+func (p *BasePlugin) Init() {
 }
 
 func (p *BasePlugin) GetClient() interfaces.GrpcClient {
 	return p.c
-}
-
-func NewPlugin() (p Plugin) {
-	return &BasePlugin{}
 }

@@ -11,6 +11,6 @@ func (p *Plugin) GetClient() interfaces.GrpcClient {
 	panic("implement me")
 }
 
-func (p *Plugin) Register() {
+func (p *Plugin) Init() {
 	panic("implement me")
 }

@@ -25,6 +25,7 @@ type Internal struct {
 	api      *gin.Engine
 	apiSvr   *http.Server
 	p        *models.Plugin
+	eventSvc EventServiceInterface
 }
 
 func (internal *Internal) GetGrpcClient() interfaces.GrpcClient {
@@ -41,6 +42,10 @@ func (internal *Internal) GetApi() *gin.Engine {
 
 func (internal *Internal) GetApiServer() *http.Server {
 	return internal.apiSvr
+}
+
+func (internal *Internal) GetEventService() EventServiceInterface {
+	return internal.eventSvc
 }
 
 func (internal *Internal) StartApi() {
@@ -148,6 +153,12 @@ func NewInternal() *Internal {
 	internal.apiSvr = &http.Server{
 		Addr:    internal.p.Endpoint,
 		Handler: internal.api,
+	}
+
+	// event service
+	internal.eventSvc = NewEventService(internal)
+	if err := internal.eventSvc.Subscribe(); err != nil {
+		panic(err)
 	}
 
 	return internal

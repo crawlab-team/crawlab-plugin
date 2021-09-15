@@ -100,7 +100,7 @@ func (internal *Internal) register() {
 }
 
 func (internal *Internal) _apiGetFile(c *gin.Context) {
-	relPath := strings.Replace(c.Request.URL.Path, "/", "", 1)
+	relPath := strings.Replace(c.Request.URL.Path, "/_ui/", "", 1)
 	filePath, err := filepath.Abs(relPath)
 	if err != nil {
 		controllers.HandleErrorInternalServerError(c, err)
@@ -138,7 +138,7 @@ func NewInternal() *Internal {
 
 	// api
 	internal.api = gin.New()
-	internal.api.GET("/*path", internal._apiGetFile)
+	internal.api.GET("/_ui/*path", internal._apiGetFile)
 	_ = middlewares.InitMiddlewares(internal.api)
 
 	// register

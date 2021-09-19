@@ -21,7 +21,6 @@ func (svc *EventService) Subscribe() (err error) {
 	// request request data
 	data, err := json.Marshal(entity.GrpcEventServiceMessage{
 		Type: constants.GrpcEventServiceTypeRegister,
-		Key:  svc.internal.p.EventKey,
 	})
 	if err != nil {
 		return trace.TraceError(err)

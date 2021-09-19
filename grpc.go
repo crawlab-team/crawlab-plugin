@@ -25,6 +25,9 @@ func NewGrpcClient() (c interfaces.GrpcClient, err error) {
 	// plugin type
 	opts = append(opts, client.WithSubscribeType(constants.GrpcSubscribeTypePlugin))
 
+	// no handle message
+	opts = append(opts, client.WithHandleMessage(false))
+
 	// grpc client
 	c, err = client.GetClient(config.DefaultConfigPath, opts...)
 	if err != nil {

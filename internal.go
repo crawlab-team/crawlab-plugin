@@ -147,7 +147,7 @@ func NewInternal() *Internal {
 	_ = middlewares.InitMiddlewares(internal.api)
 
 	// register
-	internal.register()
+	//internal.register()
 
 	// api server
 	internal.apiSvr = &http.Server{

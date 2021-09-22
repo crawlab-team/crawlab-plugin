@@ -9,6 +9,7 @@ import (
 	"github.com/crawlab-team/crawlab-core/middlewares"
 	"github.com/crawlab-team/crawlab-core/models/client"
 	"github.com/crawlab-team/crawlab-core/models/models"
+	"github.com/crawlab-team/go-trace"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -51,6 +52,7 @@ func (internal *Internal) GetEventService() EventServiceInterface {
 func (internal *Internal) StartApi() {
 	if err := internal.apiSvr.ListenAndServe(); err != nil {
 		log.Info("plugin stopped")
+		trace.PrintError(err)
 	}
 }
 

@@ -9,8 +9,10 @@ import (
 	"github.com/crawlab-team/crawlab-core/middlewares"
 	"github.com/crawlab-team/crawlab-core/models/client"
 	"github.com/crawlab-team/crawlab-core/models/models"
+	"github.com/crawlab-team/crawlab-core/utils"
 	"github.com/crawlab-team/go-trace"
 	"github.com/gin-gonic/gin"
+	"github.com/spf13/viper"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"io/ioutil"
@@ -58,6 +60,10 @@ func (internal *Internal) StartApi() {
 
 func (internal *Internal) StopApi() {
 	_ = internal.apiSvr.Shutdown(context.Background())
+}
+
+func (internal *Internal) Wait() {
+	utils.DefaultWait()
 }
 
 func (internal *Internal) loadConfig() {
@@ -149,7 +155,9 @@ func NewInternal() *Internal {
 	_ = middlewares.InitMiddlewares(internal.api)
 
 	// register
-	//internal.register()
+	if viper.GetBool("plugin.register") {
+		internal.register()
+	}
 
 	// api server
 	internal.apiSvr = &http.Server{

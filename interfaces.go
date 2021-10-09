@@ -6,6 +6,7 @@ type Plugin interface {
 	Init() error
 	Start() error
 	Stop() error
+	Wait()
 }
 
 type EventServiceInterface interface {

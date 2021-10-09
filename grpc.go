@@ -6,6 +6,7 @@ import (
 	"github.com/crawlab-team/crawlab-core/entity"
 	"github.com/crawlab-team/crawlab-core/grpc/client"
 	"github.com/crawlab-team/crawlab-core/interfaces"
+	"github.com/spf13/viper"
 	"os"
 )
 
@@ -28,8 +29,14 @@ func NewGrpcClient() (c interfaces.GrpcClient, err error) {
 	// no handle message
 	opts = append(opts, client.WithHandleMessage(false))
 
+	// config path
+	configPath := viper.GetString("config.path")
+	if configPath == "" {
+		configPath = config.DefaultConfigPath
+	}
+
 	// grpc client
-	c, err = client.GetClient(config.DefaultConfigPath, opts...)
+	c, err = client.GetClient(configPath, opts...)
 	if err != nil {
 		return nil, err
 	}

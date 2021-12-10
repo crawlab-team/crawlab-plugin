@@ -18,6 +18,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"path"
 	"path/filepath"
 	"strings"
 )
@@ -123,6 +124,35 @@ func (internal *Internal) _apiGetFile(c *gin.Context) {
 	c.AbortWithStatus(http.StatusOK)
 }
 
+func (internal *Internal) _apiGetLang(c *gin.Context) {
+	relPath := internal.p.LangUrl
+	dirPath, err := filepath.Abs(relPath)
+	if err != nil {
+		controllers.HandleErrorInternalServerError(c, err)
+		return
+	}
+	res := bson.M{}
+	for _, f := range utils.ListDir(dirPath) {
+		if !strings.HasSuffix(f.Name(), ".json") {
+			continue
+		}
+		filePath := path.Join(dirPath, f.Name())
+		data, err := ioutil.ReadFile(filePath)
+		if err != nil {
+			controllers.HandleErrorInternalServerError(c, err)
+			return
+		}
+		var langData bson.M
+		if err := json.Unmarshal(data, &langData); err != nil {
+			controllers.HandleErrorInternalServerError(c, err)
+			return
+		}
+		lang := strings.Replace(f.Name(), ".json", "", 1)
+		res[lang] = langData
+	}
+	controllers.HandleSuccessWithData(c, res)
+}
+
 func NewInternal() *Internal {
 	var err error
 
@@ -152,6 +182,7 @@ func NewInternal() *Internal {
 	// api
 	internal.api = gin.New()
 	internal.api.GET("/_ui/*path", internal._apiGetFile)
+	internal.api.GET("/_lang", internal._apiGetLang)
 	_ = middlewares.InitMiddlewares(internal.api)
 
 	// register

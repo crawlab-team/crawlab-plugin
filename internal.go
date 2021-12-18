@@ -60,7 +60,9 @@ func (internal *Internal) StartApi() {
 }
 
 func (internal *Internal) StopApi() {
-	_ = internal.apiSvr.Shutdown(context.Background())
+	if err := internal.apiSvr.Shutdown(context.Background()); err != nil {
+		trace.PrintError(err)
+	}
 }
 
 func (internal *Internal) Wait() {

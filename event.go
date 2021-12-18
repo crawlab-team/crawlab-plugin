@@ -8,6 +8,7 @@ import (
 	"github.com/crawlab-team/crawlab-core/entity"
 	grpc "github.com/crawlab-team/crawlab-grpc"
 	"github.com/crawlab-team/go-trace"
+	"github.com/spf13/viper"
 )
 
 type EventService struct {
@@ -28,8 +29,9 @@ func (svc *EventService) Subscribe() (err error) {
 
 	// register request
 	req := &grpc.PluginRequest{
-		Name: svc.internal.p.Name,
-		Data: data,
+		Name:    svc.internal.p.Name,
+		NodeKey: viper.GetString("node.key"),
+		Data:    data,
 	}
 
 	// register

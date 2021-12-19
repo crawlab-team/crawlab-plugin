@@ -1,7 +1,6 @@
 package plugin
 
 import (
-	"context"
 	"encoding/json"
 	"github.com/apex/log"
 	"github.com/crawlab-team/crawlab-core/controllers"
@@ -54,13 +53,13 @@ func (internal *Internal) GetEventService() EventServiceInterface {
 
 func (internal *Internal) StartApi() {
 	if err := internal.apiSvr.ListenAndServe(); err != nil {
-		log.Info("plugin stopped")
 		trace.PrintError(err)
 	}
+	log.Info("plugin stopped")
 }
 
 func (internal *Internal) StopApi() {
-	if err := internal.apiSvr.Shutdown(context.Background()); err != nil {
+	if err := internal.apiSvr.Close(); err != nil {
 		trace.PrintError(err)
 	}
 }

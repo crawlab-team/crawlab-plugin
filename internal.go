@@ -11,6 +11,7 @@ import (
 	"github.com/crawlab-team/crawlab-core/utils"
 	"github.com/crawlab-team/go-trace"
 	"github.com/gin-gonic/gin"
+	"github.com/gogf/greuse"
 	"github.com/spf13/viper"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -52,7 +53,15 @@ func (internal *Internal) GetEventService() EventServiceInterface {
 }
 
 func (internal *Internal) StartApi() {
-	if err := internal.apiSvr.ListenAndServe(); err != nil {
+	// api listener
+	apiLn, err := greuse.Listen("tcp", internal.p.Endpoint)
+	if err != nil {
+		trace.PrintError(err)
+		return
+	}
+
+	// serve api server
+	if err := internal.apiSvr.Serve(apiLn); err != nil {
 		trace.PrintError(err)
 	}
 	log.Info("plugin stopped")
@@ -193,7 +202,6 @@ func NewInternal() *Internal {
 
 	// api server
 	internal.apiSvr = &http.Server{
-		Addr:    internal.p.Endpoint,
 		Handler: internal.api,
 	}
 
